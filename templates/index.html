@@ -1,5 +1,26 @@
-<input type="text" placeholder="data" name="data"/>
-<input type="text" placeholder="key" name="key"/>
-<input type="text" placeholder="encoded data" name="encoded_data"/>
-<input type="button" value="Encrypt" name="encrypt"/>
-<input type="button" value="Decrypt" name="decrypt"/>
+{% load staticfiles %}
+
+<form action="{% url 'home' %}" method="post" class="crypto-form">
+{% csrf_token %}
+    <input type="text" placeholder="data" name="data" id="data"/>
+    <input type="text" placeholder="key" name="key" id="key"/>
+    <input type="text" placeholder="encoded data" name="encoded_data" id="encoded_data"/>
+</form>
+
+<input type="submit" value="Encrypt" name="encrypt" id="encrypt"/>
+<input type="submit" value="Decrypt" name="decrypt" id="decrypt"/>
+
+<script type="text/javascript" src="{% static 'lib/jquery.js' %}"></script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#encrypt").click(function(){
+            $("#encoded_data").val("");
+            $(".crypto-form").submit();
+        });
+        $("#decrypt").click(function(){
+            $("#data").val("");
+            $(".crypto-form").submit();
+        });
+    });
+</script>
