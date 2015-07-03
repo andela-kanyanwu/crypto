@@ -63,3 +63,4 @@ target/
 #dev environment
 
 *.sqlite3
+.idea/

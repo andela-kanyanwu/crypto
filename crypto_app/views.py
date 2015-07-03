@@ -2,22 +2,26 @@ from django.shortcuts import render
 from django.views.generic import View
 
 
-def crypt_encode(data, key):
+def crypt_encode_decode(data, key):
     data_to_encode = bytearray(data)
     key_to_encode = bytearray(key)
     encoded_data = bytearray(len(data_to_encode))
 
     for i in range(len(data_to_encode)):
-        encoded_data[i] = data_to_encode[i] ^ key_to_encode[i%len(key)]
+        encoded_data[i] = data_to_encode[i] ^ key_to_encode[i % len(key)]
 
     return str(encoded_data)
 
-def hex_to_bytearray(hex_value):
-    hex_value_array = str(hex_value).split(':')
-    result = bytearray(len(hex_value_array))
+def string_to_hex(string_value):
+    hex_buffer = ""
+    for i in string_value:
+        hex_buffer = hex_buffer + i.encode('hex') + ':'
+    return hex_buffer.rstrip(':')
 
-    for hex_num in hex_value_array:
-        pass
+def hex_to_string(hex_value):
+    hex_value_str = str(hex_value).replace(':', '')
+    result = bytearray.fromhex(hex_value_str)
+    return str(result)
 
 
 # Create your views here.
@@ -34,18 +38,15 @@ class HomeView(View):
         if data and key:
             data_to_encode = str(data)
             key_to_encode = str(key)
-            encoded_data_buffer = crypt_encode(data_to_encode, key_to_encode)
-            hex_encoded_data = ""
+            encoded_data_buffer = crypt_encode_decode(data_to_encode, key_to_encode)
+            hex_encoded_data = string_to_hex(encoded_data_buffer)
 
-            for i in encoded_data_buffer:
-                hex_encoded_data =  hex_encoded_data + i.encode('hex') + ':'
-
-            hex_encoded_data = hex_encoded_data.rstrip(':')    
-            print hex_encoded_data
-            # return render hex_encoded_data on the template
+            return render(request, 'index.html', {"encoded_data": hex_encoded_data, "key": key_to_encode})
 
         #To decode
         if encoded_data and key:
-            decoded_data_buffer = crypt_encode(encoded_data, key)
-            
-        
+            encoded_data_str = hex_to_string(str(encoded_data))
+            key_to_encode = str(key)
+            decoded_data_buffer = crypt_encode_decode(encoded_data_str, key_to_encode)
+
+            return render(request, 'index.html', {"decoded_data": decoded_data_buffer, "key": key_to_encode})
