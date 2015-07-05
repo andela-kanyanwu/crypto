@@ -16,11 +16,15 @@
     $(document).ready(function(){
         $("#encrypt").click(function(){
             $("#encoded_data").val("");
-            $(".crypto-form").submit();
+            if (($("#data").val()).length > 0 && ($("#key").val()).length > 0){
+                $(".crypto-form").submit();
+            }
         });
         $("#decrypt").click(function(){
             $("#data").val("");
-            $(".crypto-form").submit();
+            if (($("#encoded_data").val()).length > 0 && ($("#key").val()).length > 0){
+                $(".crypto-form").submit();
+            }
         });
     });
 </script>
